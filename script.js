@@ -63,7 +63,8 @@ function renderProducts(filter, customList) {
     : (filter === 'all' ? products : products.filter(function(p) { return p.cat === filter; }));
 
   grid.innerHTML = filtered.map(function(p) {
-    return '<div class="product-card" onclick="openOrderModal(\'' + escapeAttr(p.name) + '\')">' +
+    var detailUrl = 'product-detail.html?product=' + encodeURIComponent(p.name);
+    return '<div class="product-card" onclick="window.location.href=\'' + detailUrl + '\'">' +
 
       '<div class="product-img">' +
         '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />' +
@@ -81,7 +82,7 @@ function renderProducts(filter, customList) {
 
         '<div class="product-footer">' +
           '<div class="product-price">' + p.price.replace(/(\/\w+)$/, '<span>$1</span>') + '</div>' +
-          '<button class="btn-quote" onclick="event.stopPropagation(); openOrderModal(\'' + escapeAttr(p.name) + '\')">Get Quote</button>' +
+          '<a class="btn-quote" href="' + detailUrl + '" onclick="event.stopPropagation()">View Details</a>' +
         '</div>' +
       '</div>' +
 
@@ -159,31 +160,52 @@ function closeOrderModal() {
 }
 
 /* Handle quick-enquiry submit inside modal */
-function submitOrder(e) {
+async function submitOrder(e) {
   e.preventDefault();
-
-  var btn = document.getElementById('orderSubmitBtn');
+  var form = e.target;
+  var btn  = form.querySelector('button[type="submit"]');
   if (!btn) return;
 
-  btn.textContent      = '✓ Enquiry Sent!';
-  btn.style.background = '#4caf50';
-  btn.style.color      = '#fff';
-  btn.disabled         = true;
+  var productName = document.getElementById('modalProductName');
+  var data = {
+    type:    'product_enquiry',
+    product: productName ? productName.textContent : '',
+    name:    form.name.value,
+    phone:   form.phone.value,
+    city:    form.city ? form.city.value : '',
+    qty:     form.qty  ? form.qty.value  : ''
+  };
 
-  setTimeout(function() {
-    closeOrderModal();
-    btn.textContent      = 'Confirm Enquiry →';
-    btn.style.background = '';
-    btn.style.color      = '';
-    btn.disabled         = false;
-  }, 2000);
+  btn.textContent = 'Sending…';
+  btn.disabled    = true;
+
+  var result = (typeof saveLead === 'function')
+    ? await saveLead('leads', data)
+    : { success: true };
+
+  if (result.success) {
+    btn.textContent      = '✓ Enquiry Sent!';
+    btn.style.background = '#4caf50';
+    btn.style.color      = '#fff';
+    setTimeout(function() {
+      closeOrderModal();
+      btn.textContent      = 'Confirm Enquiry →';
+      btn.style.background = '';
+      btn.style.color      = '';
+      btn.disabled         = false;
+    }, 2000);
+  } else {
+    btn.textContent  = 'Error — Try Again';
+    btn.style.background = '#e53935';
+    btn.style.color      = '#fff';
+    btn.disabled = false;
+  }
 }
 
 /* Close modal when clicking outside the box */
 function initModalBackdropClose() {
   var modal = document.getElementById('orderModal');
   if (!modal) return;
-
   modal.addEventListener('click', function(e) {
     if (e.target === modal) closeOrderModal();
   });
@@ -192,27 +214,48 @@ function initModalBackdropClose() {
 
 /* ─────────────────────────────────────────
    5. CONTACT FORM SUBMIT
-   Handles the main enquiry form in the
-   Contact section.
 ───────────────────────────────────────── */
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
-
-  var btn = e.target.querySelector('.form-submit');
+  var form = e.target;
+  var btn  = form.querySelector('.form-submit');
   if (!btn) return;
 
-  btn.textContent      = '✓ Enquiry Sent! We will contact you within 24 hours.';
-  btn.style.background = '#4caf50';
-  btn.style.color      = '#fff';
-  btn.disabled         = true;
+  var data = {
+    type:    'contact_enquiry',
+    name:    form.name    ? form.name.value    : '',
+    phone:   form.phone   ? form.phone.value   : '',
+    email:   form.email   ? form.email.value   : '',
+    city:    form.city    ? form.city.value    : '',
+    product: form.product ? form.product.value : '',
+    qty:     form.qty     ? form.qty.value     : '',
+    message: form.message ? form.message.value : ''
+  };
 
-  setTimeout(function() {
-    btn.textContent      = 'Send Enquiry →';
-    btn.style.background = '';
-    btn.style.color      = '';
+  btn.textContent = 'Sending…';
+  btn.disabled    = true;
+
+  var result = (typeof saveLead === 'function')
+    ? await saveLead('contacts', data)
+    : { success: true };
+
+  if (result.success) {
+    btn.textContent      = '✓ Enquiry Sent! We will contact you within 24 hours.';
+    btn.style.background = '#4caf50';
+    btn.style.color      = '#fff';
+    setTimeout(function() {
+      btn.textContent      = 'Send Enquiry →';
+      btn.style.background = '';
+      btn.style.color      = '';
+      btn.disabled         = false;
+      form.reset();
+    }, 4000);
+  } else {
+    btn.textContent      = 'Error — Please try again';
+    btn.style.background = '#e53935';
+    btn.style.color      = '#fff';
     btn.disabled         = false;
-    e.target.reset();
-  }, 4000);
+  }
 }
 
 
