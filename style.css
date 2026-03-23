@@ -823,6 +823,8 @@ nav ul li a:hover {
   transition: all var(--transition);
   letter-spacing: 0.02em;
   font-family: 'DM Sans', sans-serif;
+  display: inline-block;
+  text-align: center;
 }
 .btn-quote:hover {
   background: var(--gold);
@@ -1330,15 +1332,46 @@ footer {
 /* ─────────────────────────────────────────
    18. CHATBOT FLOATING BUTTON & WIDGET
 ───────────────────────────────────────── */
-.chatbot-float {
-  width: auto;
-  height: 50px;
+
+/* Fixed floating chat button — bottom-right on every page */
+.chatbot-float-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 500;
+  height: 52px;
   border-radius: 50px;
-  padding: 0 20px;
+  padding: 0 22px;
   gap: 8px;
   background: var(--brown);
   border: none;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(90,46,12,0.45);
+  transition: all var(--transition);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+.chatbot-float-btn:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 10px 32px rgba(90,46,12,0.55);
+  background: var(--gold);
+}
+
+/* Legacy inline hero button (index.html only) */
+.chatbot-float {
+  height: 52px;
+  border-radius: 50px;
+  padding: 0 22px;
+  gap: 8px;
+  background: var(--brown);
+  border: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -1358,7 +1391,7 @@ footer {
 
 .chatbot-window {
   position: fixed;
-  bottom: 110px;
+  bottom: 92px;
   right: 28px;
   width: 340px;
   max-height: 500px;
@@ -1482,7 +1515,8 @@ footer {
 .chatbot-input-row button:hover { background: var(--gold); }
 
 @media (max-width: 480px) {
-  .chatbot-window { width: calc(100vw - 32px); right: 16px; bottom: 100px; }
+  .chatbot-window { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
+  .chatbot-float-btn { right: 16px; bottom: 16px; height: 46px; padding: 0 16px; font-size: 13px; }
 }
 
 
@@ -1721,12 +1755,16 @@ footer {
   .hero p  { margin: 0 auto 2.5rem; }
   .hero-actions  { justify-content: center; }
   .hero-stats    { justify-content: center; }
-  .hero-visual   { display: none; }       /* hide circle on tablet */
+  .hero-visual   { display: none; }
 
   .why-grid          { grid-template-columns: 1fr; }
   .markets-grid      { grid-template-columns: repeat(2, 1fr); }
-  .testimonials-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
   .footer-grid       { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .contact-grid      { gap: 3rem; }
+
+  /* Topbar: hide company meta on tablet */
+  .topbar-meta { display: none; }
 }
 
 
@@ -1734,39 +1772,121 @@ footer {
    23. RESPONSIVE — MOBILE (≤ 768px)
 ───────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Hide desktop nav, show hamburger */
-  nav ul               { display: none; }
+
+  /* ── Topbar ── */
+  .topbar {
+    padding: 10px 1rem;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .topbar-brand-text { display: none; }
+  .topbar-right {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .topbar-pill { font-size: 12px; padding: 7px 12px; min-height: 34px; }
+
+  /* ── Navigation ── */
+  nav {
+    top: 0;
+    height: auto;
+    min-height: 60px;
+    padding: 0 1rem;
+    flex-wrap: wrap;
+    position: sticky;
+    z-index: 200;
+  }
+  nav ul { display: none; }
   nav ul.open {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 68px;
+    top: 60px;
     left: 0;
     right: 0;
     background: var(--brown);
     padding: 1rem;
     gap: 0.3rem;
     z-index: 300;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   }
+  nav ul.open li a { padding: 10px 14px; font-size: 14px; }
   .nav-hamburger { display: flex; }
   .nav-search    { display: none; }
+  .logo { font-size: 22px; }
 
-  /* Hero */
-  .hero   { padding: 3rem 1.5rem; }
-  .hero h1{ font-size: 2.4rem; }
+  /* ── Sections ── */
+  section { padding: 3rem 1.2rem; }
+  .cat-section { padding: 2rem 1.2rem 0; }
 
-  /* Grids → single column */
-  .markets-grid      { grid-template-columns: 1fr 1fr; }
-  .contact-grid      { grid-template-columns: 1fr; gap: 3rem; }
-  .form-row          { grid-template-columns: 1fr; }
-  .footer-grid       { grid-template-columns: 1fr; gap: 2rem; }
+  /* ── Hero ── */
+  .hero { padding: 3rem 1.2rem; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero p  { font-size: 15px; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .hero-badge { font-size: 11px; padding: 6px 14px; }
 
-  /* Trust strip */
-  .trust-strip    { gap: 1.5rem; }
-  .trust-divider  { display: none; }
+  /* ── Trust strip ── */
+  .trust-strip   { gap: 1rem; padding: 1rem; }
+  .trust-divider { display: none; }
+  .trust-item    { font-size: 12.5px; }
 
-  /* Pricing table compact */
-  .pricing-table              { font-size: 12px; }
+  /* ── Products ── */
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .product-img   { height: 180px; }
+  .product-name  { font-size: 1.1rem; }
+  .cat-tabs      { gap: 6px; }
+  .cat-tab       { font-size: 12.5px; padding: 7px 14px; }
+
+  /* ── Why / Features ── */
+  .why-grid      { grid-template-columns: 1fr; gap: 2rem; }
+  .feature-item  { padding: 1rem; }
+
+  /* ── Markets ── */
+  .markets-grid  { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .market-card   { padding: 1.2rem 0.8rem; }
+
+  /* ── Testimonials ── */
+  .testimonials-grid { grid-template-columns: 1fr; }
+
+  /* ── Contact ── */
+  .contact-grid  { grid-template-columns: 1fr; gap: 2rem; }
+  .form-row      { grid-template-columns: 1fr; }
+
+  /* ── Footer ── */
+  .footer-grid   { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+
+  /* ── Pricing table ── */
+  .pricing-table            { font-size: 12px; }
   .pricing-table td,
-  .pricing-table th           { padding: 0.8rem 0.7rem; }
+  .pricing-table th         { padding: 0.7rem 0.6rem; }
+
+  /* ── About page grids ── */
+  .why-grid > div:last-child { order: -1; }
+
+  /* ── Section headings ── */
+  .section-title { font-size: clamp(1.6rem, 5vw, 2.4rem); }
+  .section-sub   { font-size: 14px; }
+  .section-tag   { font-size: 11.5px; padding: 8px 18px; }
+
+  /* ── Chatbot ── */
+  .chatbot-float-btn { right: 16px; bottom: 16px; }
+  .chatbot-window    { width: calc(100vw - 32px); right: 16px; bottom: 80px; max-height: 420px; }
+}
+
+
+/* ─────────────────────────────────────────
+   24. RESPONSIVE — SMALL MOBILE (≤ 480px)
+───────────────────────────────────────── */
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .markets-grid  { grid-template-columns: 1fr; }
+  .hero h1       { font-size: 1.9rem; }
+  .topbar        { display: none; } /* hide topbar on very small screens */
+  .chatbot-float-btn { height: 46px; padding: 0 16px; font-size: 13px; }
+  .chatbot-window    { width: calc(100vw - 24px); right: 12px; }
 }
