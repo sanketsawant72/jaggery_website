@@ -7,6 +7,9 @@
    0. BACKEND API — saveLead()
 ───────────────────────────────────────── */
 const API_URL = 'https://jaggery-website.onrender.com/api';
+app.use(express.json());
+const cors = require('cors');
+app.use(cors());  
 
 async function saveLead(collection, data) {
   try {
