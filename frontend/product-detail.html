@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Product Detail – Nalini Jaggery</title>
+  <meta name="description" content="View detailed information about our organic jaggery products. Get a free quote, check pricing, and place your order." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .pd-hero { background: linear-gradient(135deg,#2C1505 0%,#5A2E0C 40%,#8B5A0A 100%); padding: 3rem 2rem 2rem; }
+    .pd-breadcrumb { font-size:13px; color:rgba(251,246,238,0.5); margin-bottom:1.5rem; }
+    .pd-breadcrumb a { color:var(--gold-light); }
+    .pd-breadcrumb a:hover { text-decoration:underline; }
+    .pd-layout { display:grid; grid-template-columns:1fr 1fr; gap:3rem; max-width:1100px; margin:0 auto; align-items:start; }
+    .pd-img-wrap { border-radius:var(--radius-lg); overflow:hidden; background:linear-gradient(135deg,#F5E6C8,#EAD0A0); aspect-ratio:1/1; position:relative; }
+    .pd-img-wrap img { width:100%; height:100%; object-fit:cover; }
+    .pd-badge-overlay { position:absolute; top:14px; left:14px; background:var(--gold); color:#fff; font-size:11px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+    .pd-info { color:var(--cream); }
+    .pd-cat-tag { display:inline-block; background:rgba(245,196,81,.12); border:1px solid rgba(245,196,81,.3); color:var(--gold-light); font-size:12px; letter-spacing:.1em; text-transform:uppercase; padding:6px 16px; border-radius:30px; margin-bottom:1rem; }
+    .pd-name { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:600; line-height:1.15; margin-bottom:.5rem; }
+    .pd-price { font-size:2rem; font-weight:700; color:var(--gold-light); margin:1rem 0; font-family:'DM Sans',sans-serif; }
+    .pd-price span { font-size:1rem; font-weight:400; color:rgba(251,246,238,.5); }
+    .pd-specs { background:rgba(255,255,255,.06); border:1px solid rgba(245,196,81,.15); border-radius:var(--radius); padding:1.2rem 1.4rem; margin:1.5rem 0; display:grid; grid-template-columns:1fr 1fr; gap:.6rem 1.5rem; }
+    .pd-spec-row { display:flex; flex-direction:column; gap:2px; }
+    .pd-spec-key { font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:rgba(251,246,238,.4); }
+    .pd-spec-val { font-size:14.5px; font-weight:500; color:var(--cream); }
+    .pd-actions { display:flex; flex-direction:column; gap:.8rem; margin-top:1.5rem; }
+    .pd-actions .btn-primary { text-align:center; font-size:15px; padding:14px; border-radius:10px; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; font-weight:500; }
+    .pd-btn-wa { background:#25D366; color:#fff; padding:14px; border-radius:10px; font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px; transition:all var(--transition); }
+    .pd-btn-wa:hover { background:#1ebe5d; transform:translateY(-2px); }
+    .pd-btn-call { background:rgba(251,246,238,.08); border:1.5px solid rgba(245,196,81,.3); color:var(--cream); padding:13px; border-radius:10px; font-size:15px; font-weight:400; display:flex; align-items:center; justify-content:center; gap:8px; transition:all var(--transition); }
+    .pd-btn-call:hover { border-color:var(--gold-light); background:rgba(245,196,81,.08); }
+    .pd-desc-section { background:var(--warm-white); padding:4rem 2rem; }
+    .pd-desc-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr; gap:3rem; align-items:start; }
+    .pd-desc h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; color:var(--brown-dark); margin-bottom:1rem; }
+    .pd-desc p { font-size:15px; color:var(--muted); line-height:1.8; font-weight:300; margin-bottom:1rem; }
+    .pd-features { display:flex; flex-direction:column; gap:.7rem; margin-top:1rem; }
+    .pd-feature { display:flex; align-items:center; gap:.7rem; font-size:14px; color:var(--text); }
+    .pd-feature::before { content:'✓'; color:var(--gold); font-weight:700; flex-shrink:0; }
+    .pd-quote-card { background:var(--brown); border-radius:var(--radius-lg); padding:2rem; color:var(--cream); position:sticky; top:160px; }
+    .pd-quote-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin-bottom:.5rem; color:var(--gold-light); }
+    .pd-quote-card p { font-size:13.5px; color:rgba(251,246,238,.6); margin-bottom:1.5rem; line-height:1.7; }
+    .pd-quote-card form { display:flex; flex-direction:column; gap:.8rem; }
+    .pd-quote-card input { background:rgba(251,246,238,.08); border:1px solid rgba(245,196,81,.2); border-radius:8px; padding:11px 14px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--cream); outline:none; transition:border-color .2s; }
+    .pd-quote-card input::placeholder { color:rgba(251,246,238,.35); }
+    .pd-quote-card input:focus { border-color:var(--gold-light); }
+    .pd-related { background:var(--cream); padding:4rem 2rem; }
+    .pd-related-inner { max-width:1100px; margin:0 auto; }
+    .pd-related h2 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:600; color:var(--brown-dark); margin-bottom:2rem; }
+    .pd-related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.2rem; }
+    .pd-related-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:all var(--transition); }
+    .pd-related-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:rgba(200,146,42,.35); }
+    .pd-related-img { height:160px; overflow:hidden; }
+    .pd-related-img img { width:100%; height:100%; object-fit:cover; }
+    .pd-related-body { padding:1rem; }
+    .pd-related-name { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:600; color:var(--brown-dark); margin-bottom:.3rem; }
+    .pd-related-price { font-size:1rem; font-weight:700; color:var(--gold); }
+    @media(max-width:900px) {
+      .pd-layout { grid-template-columns:1fr; }
+      .pd-desc-inner { grid-template-columns:1fr; }
+      .pd-quote-card { position:static; }
+    }
+    @media(max-width:600px) {
+      .pd-specs { grid-template-columns:1fr; }
+      .pd-related-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-brand">
+      <div class="topbar-logo-mark">
+        <img src="https://5.imimg.com/data5/SELLER/Logo/2025/8/535726959/MP/PQ/EU/196886344/logo-vector-copy-90x90.jpg" alt="Klass Exim Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+      </div>
+      <div class="topbar-brand-text">
+        <div class="topbar-company">Klass Exim Corporate Private Limited</div>
+        <div class="topbar-meta">
+          <span>Navi Mumbai, Thane, Maharashtra</span>
+          <span>• GST No. <strong>27AAICK8476F1Z2</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <a href="https://wa.me/919112658473" target="_blank" class="topbar-pill">
+      <svg class="topbar-icon" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M19.11 17.56c-.27-.14-1.61-.79-1.86-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.16-1.33-.8-.72-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.56.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.48-.84-2.02-.22-.54-.45-.46-.61-.46h-.52c-.18 0-.48.07-.73.34-.25.27-.95.93-.95 2.27 0 1.33.98 2.62 1.11 2.8.14.18 1.93 2.95 4.68 4.13.65.28 1.16.44 1.55.56.65.21 1.23.18 1.7.11.52-.08 1.61-.66 1.84-1.3.23-.64.23-1.18.16-1.3-.07-.12-.25-.2-.52-.34z"/><path fill="currentColor" d="M16.02 3.2c-6.97 0-12.64 5.65-12.64 12.6 0 2.23.59 4.41 1.7 6.33L3.2 28.8l6.88-1.8c1.86 1.02 3.96 1.56 6.11 1.56h.01c6.97 0 12.64-5.65 12.64-12.6 0-3.36-1.31-6.52-3.69-8.89-2.39-2.36-5.56-3.67-8.93-3.67zm0 23.22h-.01c-1.9 0-3.77-.51-5.4-1.49l-.39-.23-4.08 1.07 1.09-3.98-.25-.4a10.46 10.46 0 0 1-1.63-5.6c0-5.78 4.72-10.48 10.52-10.48 2.81 0 5.45 1.09 7.44 3.06a10.42 10.42 0 0 1 3.08 7.42c0 5.78-4.72 10.48-10.37 10.63z"/></svg>
+      WhatsApp
+    </a>
+    <a href="tel:+919112658473" class="topbar-pill">📞 Call 09112658473</a>
+    <a href="mailto:info@nalinijaggery.com" class="topbar-pill">✉️ Send Email</a>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav>
+<a href="index.html" class="logo">Nalini <span>Jaggery</span></a>
+  <ul id="navMenu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html" class="active">Products</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="quote.html">Get Free Quote</a></li>
+  </ul>
+  <div class="nav-search">
+    <div class="nav-search-wrap">
+      <input type="text" id="navSearchInput" placeholder="Search Products" autocomplete="off"
+        oninput="showSearchSuggestions(this.value)"
+        onkeydown="if(event.key==='Enter') handleNavSearch()"
+        onfocus="showSearchSuggestions(this.value)" />
+      <ul class="search-suggestions" id="searchSuggestions"></ul>
+    </div>
+    <button class="nav-search-btn" onclick="handleNavSearch()">Search</button>
+  </div>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PRODUCT HERO -->
+<section class="pd-hero">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="pd-breadcrumb">
+      <a href="index.html">Home</a> &rsaquo; <a href="products.html">Products</a> &rsaquo; <span id="breadcrumbName">Product</span>
+    </div>
+    <div class="pd-layout">
+      <!-- Image -->
+      <div class="pd-img-wrap">
+        <img id="pdImg" src="" alt="" />
+        <div class="pd-badge-overlay" id="pdBadge" style="display:none;"></div>
+      </div>
+      <!-- Info -->
+      <div class="pd-info">
+        <div class="pd-cat-tag" id="pdCat"></div>
+        <div class="pd-name" id="pdName"></div>
+        <div class="pd-price" id="pdPrice"></div>
+        <div class="pd-specs">
+          <div class="pd-spec-row"><div class="pd-spec-key">Form</div><div class="pd-spec-val" id="pdForm"></div></div>
+          <div class="pd-spec-row"><div class="pd-spec-key">Pack Size</div><div class="pd-spec-val" id="pdPack"></div></div>
+          <div class="pd-spec-row"><div class="pd-spec-key">Type</div><div class="pd-spec-val" id="pdType"></div></div>
+          <div class="pd-spec-row"><div class="pd-spec-key">Origin</div><div class="pd-spec-val">Maharashtra, India</div></div>
+          <div class="pd-spec-row"><div class="pd-spec-key">Certification</div><div class="pd-spec-val">FSSAI Certified</div></div>
+          <div class="pd-spec-row"><div class="pd-spec-key">Availability</div><div class="pd-spec-val" style="color:#4caf50;">● In Stock</div></div>
+        </div>
+        <div class="pd-actions">
+          <button class="btn-primary" onclick="openQuoteForm()" style="background:var(--gold-light);color:var(--brown);">Get Free Quote →</button>
+          <a id="pdWhatsapp" href="#" target="_blank" class="pd-btn-wa">
+            <svg width="18" height="18" viewBox="0 0 32 32"><path fill="currentColor" d="M19.11 17.56c-.27-.14-1.61-.79-1.86-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.13-.42-2.16-1.33-.8-.72-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.56.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.48-.84-2.02-.22-.54-.45-.46-.61-.46h-.52c-.18 0-.48.07-.73.34-.25.27-.95.93-.95 2.27 0 1.33.98 2.62 1.11 2.8.14.18 1.93 2.95 4.68 4.13.65.28 1.16.44 1.55.56.65.21 1.23.18 1.7.11.52-.08 1.61-.66 1.84-1.3.23-.64.23-1.18.16-1.3-.07-.12-.25-.2-.52-.34z"/><path fill="currentColor" d="M16.02 3.2c-6.97 0-12.64 5.65-12.64 12.6 0 2.23.59 4.41 1.7 6.33L3.2 28.8l6.88-1.8c1.86 1.02 3.96 1.56 6.11 1.56h.01c6.97 0 12.64-5.65 12.64-12.6 0-3.36-1.31-6.52-3.69-8.89-2.39-2.36-5.56-3.67-8.93-3.67zm0 23.22h-.01c-1.9 0-3.77-.51-5.4-1.49l-.39-.23-4.08 1.07 1.09-3.98-.25-.4a10.46 10.46 0 0 1-1.63-5.6c0-5.78 4.72-10.48 10.52-10.48 2.81 0 5.45 1.09 7.44 3.06a10.42 10.42 0 0 1 3.08 7.42c0 5.78-4.72 10.48-10.37 10.63z"/></svg>
+            Enquire on WhatsApp
+          </a>
+          <a href="tel:+919112658473" class="pd-btn-call">📞 Call to Order: 09112658473</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESCRIPTION + QUOTE FORM -->
+<section class="pd-desc-section">
+  <div class="pd-desc-inner">
+    <div class="pd-desc">
+      <h2>Product Details</h2>
+      <p id="pdDescription">Loading product information...</p>
+      <div class="pd-features">
+        <div class="pd-feature">100% Chemical-Free — no sulphur, no artificial colour</div>
+        <div class="pd-feature">Traditionally processed using open-pan method</div>
+        <div class="pd-feature">FSSAI Certified &amp; ISO 22000:2005 quality standards</div>
+        <div class="pd-feature">Farm-sourced sugarcane from Maharashtra</div>
+        <div class="pd-feature">Available for bulk supply pan-India and export</div>
+        <div class="pd-feature">Custom packaging &amp; private labelling available</div>
+      </div>
+    </div>
+    <div class="pd-quote-card" id="quoteCard">
+      <h3>Get a Free Quote</h3>
+      <p>Fill in your details and we'll respond within 24 hours.</p>
+      <form onsubmit="submitDetailQuote(event)">
+        <input type="hidden" id="quoteProductName" name="product" />
+        <input type="text"   name="name"  placeholder="Your Name *" required />
+        <input type="tel"    name="phone" placeholder="Phone Number *" required />
+        <input type="text"   name="city"  placeholder="City / State" />
+        <input type="number" name="qty"   placeholder="Quantity Required (kg)" />
+        <button type="submit" class="btn-primary" id="quoteSubmitBtn" style="width:100%;text-align:center;border:none;cursor:pointer;">Send Enquiry →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED PRODUCTS -->
+<section class="pd-related">
+  <div class="pd-related-inner">
+    <h2>Related Products</h2>
+    <div class="pd-related-grid" id="relatedGrid"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">Nalini <span>Jaggery</span></div>
+      <p class="footer-desc">India's trusted manufacturer of organic, chemical-free jaggery. Proudly serving groceries, supermarkets, exporters and health brands across India since 2008.</p>
+      <div class="footer-cert-tags"><span>GST Verified</span><span>FSSAI Certified</span><span>ISO 22000</span></div>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="products.html">Organic Jaggery</a></li>
+        <li><a href="products.html">Jaggery Powder</a></li>
+        <li><a href="products.html">Sugarcane Jaggery</a></li>
+        <li><a href="products.html">Chemical Free Jaggery</a></li>
+        <li><a href="products.html">Natural Jaggery</a></li>
+        <li><a href="products.html">Ball Jaggery</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="about.html#testimonials">Testimonials</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="quote.html">Get Free Quote</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Markets We Serve</h4>
+      <ul>
+        <li><a href="about.html#markets">Retail &amp; Supermarkets</a></li>
+        <li><a href="about.html#markets">Wholesale Traders</a></li>
+        <li><a href="about.html#markets">Export / International</a></li>
+        <li><a href="about.html#markets">Health Food Brands</a></li>
+        <li><a href="about.html#markets">Private Label / OEM</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 <strong>Nalini Jaggery</strong>. All Rights Reserved. Made with ❤️ in Maharashtra, India</span>
+    <span>GST: 27AAICK8476F1Z2</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+  // Category label map
+  const catLabels = { organic:'Organic Jaggery', powder:'Jaggery Powder', sugarcane:'Sugarcane Jaggery', 'chemical-free':'Chemical Free', natural:'Natural Jaggery' };
+
+  // Product descriptions
+  const descriptions = {
+    organic: 'Our organic jaggery is made from the finest sugarcane grown in Maharashtra. Processed using traditional open-pan methods without any chemicals, preservatives or artificial colour. Rich in minerals like iron, magnesium and potassium — a healthier alternative to refined sugar.',
+    powder: 'Our jaggery powder is finely milled from pure sugarcane jaggery blocks. Perfect for baking, beverages, and everyday cooking. Dissolves quickly and retains all the natural goodness of whole jaggery. No added sugar, no artificial flavour.',
+    sugarcane: 'Directly sourced from sugarcane farms in Kolhapur and Sangli, our sugarcane jaggery is pressed and boiled in traditional iron pans. The result is a rich, dark, aromatic jaggery with a distinctive flavour that sets it apart from factory-made alternatives.',
+    'chemical-free': 'Completely free from sulphur, sodium hydrosulphite and any bleaching agents. Our chemical-free jaggery retains its natural dark colour and earthy aroma. Ideal for health-conscious consumers, Ayurvedic use, and export markets.',
+    natural: 'Naturally processed jaggery with no additives. Harvested and processed in small batches to maintain quality. Available in solid blocks, cubes and ball form. Suitable for retail, wholesale and private label packaging.'
+  };
+
+  function loadProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('product');
+    if (!name || typeof products === 'undefined') return;
+
+    const p = products.find(function(x){ return x.name === name; });
+    if (!p) { document.getElementById('pdName').textContent = 'Product not found'; return; }
+
+    // Update page title & meta
+    document.getElementById('pageTitle').textContent = p.name + ' – Nalini Jaggery';
+    document.getElementById('breadcrumbName').textContent = p.name;
+
+    // Hero section
+    document.getElementById('pdImg').src = p.img;
+    document.getElementById('pdImg').alt = p.name;
+    document.getElementById('pdName').textContent = p.name;
+    document.getElementById('pdPrice').innerHTML = p.price.replace(/(\/\w+)$/, '<span>$1</span>');
+    document.getElementById('pdCat').textContent = catLabels[p.cat] || p.cat;
+    document.getElementById('pdForm').textContent = p.form;
+    document.getElementById('pdPack').textContent = p.packing;
+    document.getElementById('pdType').textContent = p.type;
+
+    if (p.badge) {
+      var b = document.getElementById('pdBadge');
+      b.textContent = p.badge;
+      b.style.display = 'block';
+    }
+
+    // WhatsApp link with product pre-filled
+    var msg = encodeURIComponent('Hi, I am interested in ' + p.name + ' (' + p.price + '). Please share more details.');
+    document.getElementById('pdWhatsapp').href = 'https://wa.me/919112658473?text=' + msg;
+
+    // Quote form hidden field
+    document.getElementById('quoteProductName').value = p.name;
+
+    // Description
+    document.getElementById('pdDescription').textContent = descriptions[p.cat] || 'Premium quality jaggery from Nalini Jaggery. FSSAI certified, chemical-free, and available in bulk.';
+
+    // Related products (same category, exclude current)
+    var related = products.filter(function(x){ return x.cat === p.cat && x.name !== p.name; }).slice(0, 4);
+    var grid = document.getElementById('relatedGrid');
+    grid.innerHTML = related.map(function(r){
+      return '<div class="pd-related-card" onclick="window.location.href=\'product-detail.html?product=\'+encodeURIComponent(\'' + r.name.replace(/'/g,"&#39;") + '\')">' +
+        '<div class="pd-related-img"><img src="' + r.img + '" alt="' + r.name + '" loading="lazy" /></div>' +
+        '<div class="pd-related-body">' +
+          '<div class="pd-related-name">' + r.name + '</div>' +
+          '<div class="pd-related-price">' + r.price + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function openQuoteForm() {
+    document.getElementById('quoteCard').scrollIntoView({ behavior:'smooth', block:'center' });
+    document.querySelector('#quoteCard input[name="name"]').focus();
+  }
+
+  async function submitDetailQuote(e) {
+    e.preventDefault();
+    var form = e.target;
+    var btn  = document.getElementById('quoteSubmitBtn');
+
+    var data = {
+      type:    'product_enquiry',
+      product: document.getElementById('quoteProductName').value,
+      name:    form.name.value,
+      phone:   form.phone.value,
+      city:    form.city.value,
+      qty:     form.qty.value
+    };
+
+    btn.textContent = 'Sending…';
+    btn.disabled    = true;
+
+    var result = await saveLead('leads', data);
+
+    if (result.success) {
+      btn.textContent      = '✓ Enquiry Sent!';
+      btn.style.background = '#4caf50';
+      btn.style.color      = '#fff';
+      setTimeout(function(){
+        btn.textContent      = 'Send Enquiry →';
+        btn.style.background = '';
+        btn.style.color      = '';
+        btn.disabled         = false;
+        form.reset();
+      }, 3000);
+    } else {
+      btn.textContent      = 'Error — Try Again';
+      btn.style.background = '#e53935';
+      btn.style.color      = '#fff';
+      btn.disabled         = false;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadProduct);
+</script>
+</body>
+</html>
