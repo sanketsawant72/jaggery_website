@@ -17,7 +17,7 @@
    Sends form data to the Express backend.
    Called by submitOrder() and handleSubmit()
 ───────────────────────────────────────── */
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://jaggery-website.onrender.com/api';
 
 async function saveLead(collection, data) {
   try {
