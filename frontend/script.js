@@ -6,10 +6,10 @@
 /* ─────────────────────────────────────────
    0. BACKEND API — saveLead()
 ───────────────────────────────────────── */
-const API_URL = 'https://jaggery-website.onrender.com/api';
-app.use(express.json());
-const cors = require('cors');
-app.use(cors());  
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000/api'
+  : 'https://jaggery-website.onrender.com/api';
+
 
 async function saveLead(collection, data) {
   try {
@@ -95,10 +95,15 @@ function escapeAttr(str) {
   return str.replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
 }
 
-
 /* ─────────────────────────────────────────
    3. CATEGORY TAB FILTER
 ───────────────────────────────────────── */
+function filterCat(cat, el) {
+  document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  renderProducts(cat);
+}
+
 function initCategoryTabs() {
   var tabContainer = document.getElementById('catTabs');
   if (!tabContainer) return;
@@ -204,6 +209,7 @@ async function handleSubmit(e) {
 
   var data = {
     type:    'contact_enquiry',
+    title:   form.title   ? form.title.value   : '',
     name:    form.name    ? form.name.value    : '',
     phone:   form.phone   ? form.phone.value   : '',
     email:   form.email   ? form.email.value   : '',
@@ -351,3 +357,108 @@ document.addEventListener('DOMContentLoaded', function() {
     renderProducts('all', results);
   }
 });
+
+
+/* ─────────────────────────────────────────
+   9. CHATBOT WIDGET
+───────────────────────────────────────── */
+(function() {
+  var chatMessages = [];
+  var isOpen = false;
+
+  var botReplies = {
+    products: '🌿 We offer:\n• Organic Jaggery (solid blocks)\n• Jaggery Powder\n• Sugarcane Jaggery\n• Chemical-Free Jaggery\n• Ball Jaggery\n• Jaggery Cubes\n\nAvailable in 250g to 30kg packs. <a href="products.html">Browse all products →</a>',
+    pricing:  '💰 Our price range is ₹35–₹90/kg depending on product and quantity.\n\nFor bulk orders (50kg+) we offer special rates. <a href="quote.html">Get a free quote →</a>',
+    order:    '📦 To place an order:\n1. <a href="quote.html">Fill the quote form</a>\n2. Or WhatsApp us: <a href="https://wa.me/919112658473" target="_blank">+91 91126 58473</a>\n3. Or call: <a href="tel:+919112658473">09112658473</a>\n\nWe respond within 24 hours.',
+    export:   '✈️ Yes, we export! We are APEDA registered and supply to UAE, UK, USA and more.\n\nExport-grade packaging available. <a href="contact.html">Contact us for export enquiries →</a>'
+  };
+
+  function getWidget() { return document.getElementById('chatWidget'); }
+  function getBody()   { return document.getElementById('chatBody'); }
+
+  function toggleChat() {
+    isOpen = !isOpen;
+    var w = getWidget();
+    if (!w) return;
+    w.style.display = isOpen ? 'flex' : 'none';
+    if (isOpen && chatMessages.length === 0) {
+      appendBotMessage('👋 Hi! I\'m here to help. Ask about our products, pricing, orders or export. Or use the quick buttons below.');
+    }
+  }
+
+  function appendBotMessage(html) {
+    chatMessages.push({ from: 'bot', html: html });
+    renderMessages();
+  }
+
+  function appendUserMessage(text) {
+    chatMessages.push({ from: 'user', text: text });
+    renderMessages();
+  }
+
+  function renderMessages() {
+    var body = getBody();
+    if (!body) return;
+    body.innerHTML = chatMessages.map(function(m) {
+      if (m.from === 'bot') {
+        return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:12px;">' +
+          '<div style="width:28px;height:28px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">NJ</div>' +
+          '<div style="background:#f5f0e8;border-radius:0 12px 12px 12px;padding:10px 14px;font-size:13.5px;line-height:1.6;color:var(--text);max-width:85%;white-space:pre-line;">' + m.html + '</div>' +
+          '</div>';
+      } else {
+        return '<div style="display:flex;justify-content:flex-end;margin-bottom:12px;">' +
+          '<div style="background:var(--brown);color:#fff;border-radius:12px 0 12px 12px;padding:10px 14px;font-size:13.5px;line-height:1.6;max-width:85%;">' + m.text + '</div>' +
+          '</div>';
+      }
+    }).join('');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function sendQuickReply(type) {
+    var labels = { products: 'Products', pricing: 'Pricing', order: 'How to Order', export: 'Export' };
+    appendUserMessage(labels[type] || type);
+    setTimeout(function() { appendBotMessage(botReplies[type] || 'Please contact us for more info.'); }, 400);
+  }
+
+  function sendChatMessage() {
+    var input = document.getElementById('chatInput');
+    if (!input) return;
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    appendUserMessage(text);
+
+    var lower = text.toLowerCase();
+    var reply;
+    if (lower.match(/product|jaggery|powder|cube|ball|organic/)) {
+      reply = botReplies.products;
+    } else if (lower.match(/price|cost|rate|₹|kg|cheap|bulk/)) {
+      reply = botReplies.pricing;
+    } else if (lower.match(/order|buy|purchase|how|place/)) {
+      reply = botReplies.order;
+    } else if (lower.match(/export|international|uae|uk|usa|abroad/)) {
+      reply = botReplies.export;
+    } else if (lower.match(/contact|phone|call|email|whatsapp/)) {
+      reply = '📞 Call: <a href="tel:+919112658473">09112658473</a>\n✉️ Email: <a href="mailto:info@nalinijaggery.com">info@nalinijaggery.com</a>\n💬 WhatsApp: <a href="https://wa.me/919112658473" target="_blank">+91 91126 58473</a>';
+    } else {
+      reply = 'Thanks for your message! For a quick response, please <a href="contact.html">fill our contact form</a> or <a href="https://wa.me/919112658473" target="_blank">WhatsApp us</a>.';
+    }
+
+    setTimeout(function() { appendBotMessage(reply); }, 500);
+  }
+
+  // Expose to global scope for inline onclick handlers
+  window.toggleChat      = toggleChat;
+  window.sendQuickReply  = sendQuickReply;
+  window.sendChatMessage = sendChatMessage;
+
+  // Allow Enter key in chat input
+  document.addEventListener('DOMContentLoaded', function() {
+    var input = document.getElementById('chatInput');
+    if (input) {
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') sendChatMessage();
+      });
+    }
+  });
+})();
