@@ -1151,7 +1151,13 @@ nav ul li a:hover {
   align-items: start;
 }
 
-#contact .section-title { color: var(--cream); }
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-left .section-title { color: var(--cream); }
 
 .contact-intro {
   color: rgba(251, 245, 230, 0.6);
@@ -1894,3 +1900,13 @@ footer {
   .chatbot-float-btn { height: 46px; padding: 0 16px; font-size: 13px; }
   .chatbot-window    { width: calc(100vw - 24px); right: 12px; }
 }
+
+
+/* ─── WHATSAPP FLOAT ─── */
+.whatsapp-float {
+  display: none; /* hidden — replaced by chat toggle button */
+}
+
+/* ─── CHATBOT WIDGET ─── */
+#chatWidget { display: none; }
+#chatWidget.open { display: flex; }
